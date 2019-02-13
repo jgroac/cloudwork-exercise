@@ -3,18 +3,18 @@ import moment from 'moment';
 import { Status } from './types';
 
 
-export class WorkloadService {  
-  
+export class WorkloadService {
+
   private workLoads: { [key in number]: Work } = {};
   private counter = 0;
-  
+
 
   private getWorkload(id: number): Work | undefined {
-    return this.workLoads[id]; 
+    return this.workLoads[id];
   }
 
   private completeWorkload(work: Work) {
-    work.status = work.id % 2 
+    work.status = work.id % 2
       ? 'FAILURE'
       : 'SUCCESS';
   }
@@ -23,10 +23,16 @@ export class WorkloadService {
   public create({ complexity }: { complexity: number }) {
     const id = this.counter++;
     const status = 'WORKING';
-    
-    const seconds = complexity;
-    const completeDate = moment().add(complexity, 'second').toDate();
-    const timer = setTimeout(() => this.completeWorkload(work), seconds);
+
+    const timeToFinishInSeconds = complexity;
+    const timeToFinishInMilliseconds = timeToFinishInSeconds * 1000;
+    const completeDate = moment()
+      .add(timeToFinishInMilliseconds, 'milliseconds')
+      .toDate();
+    const timer = setTimeout(
+      () => this.completeWorkload(work),
+      timeToFinishInMilliseconds
+    );
 
     const work: Work = {
       id,
@@ -50,7 +56,7 @@ export class WorkloadService {
     const work = this.getWorkload(id);
     if (!work) return Promise.reject('Workload not found');
     if (work.status !== 'WORKING') return Promise.reject('Workload cannot be canceled');
-    
+
     clearTimeout(work.timer)
     work.status = 'CANCELED';
 
