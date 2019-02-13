@@ -20,7 +20,7 @@ describe('createNewWorkload', () => {
             id: 1,
             completeDate: '2018-01-01',
             complexity
-        }
+        };
         const workloadServiceMock = {
             create: jest.fn().mockResolvedValue(workloadMock)
         };
@@ -47,7 +47,7 @@ describe('cancelWorkload', () => {
                 payload: { id }
             });
             const state$: any = { value: { workloads: { 1: { status: 'WORKING' } } } };
-            const cancelMock = jest.fn().mockResolvedValue('canceled')
+            const cancelMock = jest.fn().mockResolvedValue('canceled');
             const workloadServiceMock = {
                 cancel: cancelMock
             };
@@ -81,7 +81,7 @@ describe('cancelWorkload', () => {
         const dependencies = { workloadService: workloadServiceMock };
 
         const output$ = await cancelWorkload(action$, state$, dependencies).toPromise();
-        expect(workloadServiceMock.cancel).toHaveBeenCalledTimes(0)
+        expect(workloadServiceMock.cancel).toHaveBeenCalledTimes(0);
     });
 
     it(`shouldn't call the API if the workload status is 'FAILURE'`, async () => {
@@ -98,7 +98,7 @@ describe('cancelWorkload', () => {
         const dependencies = { workloadService: workloadServiceMock };
 
         const output$ = await cancelWorkload(action$, state$, dependencies).toPromise();
-        expect(workloadServiceMock.cancel).toHaveBeenCalledTimes(0)
+        expect(workloadServiceMock.cancel).toHaveBeenCalledTimes(0);
     });
 })
 
@@ -110,7 +110,7 @@ describe('checkWorkload', () => {
             completeDate: '2018-01-01',
             complexity: 5,
             status: 'WORKING'
-        }
+        };
         const input$ = of({
             type: 'WORKLOAD_CREATED',
             payload: workloadMock
@@ -118,7 +118,7 @@ describe('checkWorkload', () => {
 
         const action$: any = new ActionsObservable(input$);
         const state$: any = { value: { workloads: { 1: workloadMock } } };
-        const workloadServiceMock = {}
+        const workloadServiceMock = {};
 
         const dependencies = { workloadService: workloadServiceMock };
 
@@ -139,7 +139,7 @@ describe('checkWorkload', () => {
             completeDate: '2018-01-01',
             complexity: 5,
             status: 'FAILURE'
-        }
+        };
         const input$ = of({
             type: 'WORKLOAD_CREATED',
             payload: workloadMock
@@ -147,12 +147,12 @@ describe('checkWorkload', () => {
 
         const action$: any = new ActionsObservable(input$);
         const state$: any = { value: { workloads: { 1: workloadMock } } };
-        const workloadServiceMock = {}
+        const workloadServiceMock = {};
 
         const dependencies = { workloadService: workloadServiceMock };
 
         const output$ = await checkWorkload(action$, state$, dependencies).toPromise();
-        expect(output$).toBeUndefined()
+        expect(output$).toBeUndefined();
     });
 })
 
@@ -171,7 +171,7 @@ describe('updateWorkloadStatusAutomatically', () => {
             completeDate: '2018-01-01',
             complexity: 5,
             status: 'SUCCESS'
-        }
+        };
         const workloadServiceMock = {
             checkStatus: jest.fn().mockResolvedValue(workloadMock)
         };
@@ -202,7 +202,7 @@ describe('updateWorkloadStatusAutomatically', () => {
             completeDate: '2018-01-01',
             complexity: 5,
             status: 'WORKING'
-        }
+        };
         const workloadServiceMock = {
             checkStatus: jest.fn().mockResolvedValue(workloadMock)
         };
