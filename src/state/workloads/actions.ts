@@ -1,11 +1,13 @@
 import { Status } from './types';
 
-export type Action = {
-  type: 'WORKLOAD_SUBMIT';
+export type WORKLOAD_SUBMIT = {
+  type: 'WORKLOAD_SUBMIT',
   payload: {
-    complexity: number;
-  };
-} | {
+    complexity: number
+  }
+}
+
+export type Action = WORKLOAD_SUBMIT | {
   type: 'WORKLOAD_CREATED';
   payload: {
     id: number;
@@ -41,7 +43,7 @@ export const created = ({ id, complexity, completeDate }: { id: number, complexi
   type: 'WORKLOAD_CREATED',
   payload: {
     id,
-    completeDate, 
+    completeDate,
     complexity,
   },
 });
