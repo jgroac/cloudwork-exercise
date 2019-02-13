@@ -9,7 +9,8 @@ import {
   WORKLOAD_SUBMIT,
   WORKLOAD_CANCEL,
   WORKLOAD_CREATED,
-  WORKLOAD_CHECK_STATUS
+  WORKLOAD_CHECK_STATUS,
+  ActionsTypes
 } from './types';
 import { WorkloadService } from './services';
 
@@ -29,7 +30,7 @@ export const createNewWorkload: AppEpic = (
 ) => (
   action$.pipe(
     filter(
-      (action: Action): action is WORKLOAD_SUBMIT => action.type === 'WORKLOAD_SUBMIT'
+      (action: Action): action is WORKLOAD_SUBMIT => action.type === ActionsTypes.WORKLOAD_SUBMIT
     ),
     map((action) => action.payload),
     mergeMap(({ complexity }) =>
@@ -49,7 +50,7 @@ export const cancelWorkload: AppEpic = (
 ) => (
   action$.pipe(
     filter(
-      (action: Action): action is WORKLOAD_CANCEL => action.type === 'WORKLOAD_CANCEL'
+      (action: Action): action is WORKLOAD_CANCEL => action.type === ActionsTypes.WORKLOAD_CANCEL
     ),
     map(action => action.payload),
     takeWhile((payload) => state$.value.workloads[payload.id].status === 'WORKING'),
@@ -70,14 +71,14 @@ export const checkWorkload: AppEpic = (
 ) => (
   action$.pipe(
     filter(
-      (action: Action): action is WORKLOAD_CREATED => action.type === 'WORKLOAD_CREATED'
+      (action: Action): action is WORKLOAD_CREATED => action.type === ActionsTypes.WORKLOAD_CREATED
     ),
     map(action => action.payload.id),
     mergeMap((payload) => {
       const workload = state$.value.workloads[payload]
       return of(workload).pipe(
         takeUntil(
-          action$.ofType('WORKLOAD_CANCEL').pipe(
+          action$.ofType(ActionsTypes.WORKLOAD_CANCEL).pipe(
             filter(
               (a: Action) => {
                 const action = a as WORKLOAD_CANCEL;
@@ -104,7 +105,7 @@ export const updateWorkloadStatusAutomatically: AppEpic = (
 ) => (
   action$.pipe(
     filter(
-      (action: Action): action is WORKLOAD_CHECK_STATUS => action.type === 'WORKLOAD_CHECK_STATUS'
+      (action: Action): action is WORKLOAD_CHECK_STATUS => action.type === ActionsTypes.WORKLOAD_CHECK_STATUS
     ),
     map(action => action.payload),
     mergeMap((value) => workloadService.checkStatus(value)),
