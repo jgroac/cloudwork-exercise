@@ -1,5 +1,4 @@
-import { Action } from './actions';
-import { Status } from './types';
+import { Status, Action } from './types';
 
 interface Entry<Id extends number> {
   id: Id;
@@ -8,17 +7,17 @@ interface Entry<Id extends number> {
   status: Status;
 }
 
-export type State = { 
+export type State = {
   [Id in number]: Entry<Id>;
 };
-  
+
 
 const initialState: State = {};
 
 export const reducer = (state: State = initialState, action: Action): State => {
   switch (action.type) {
-    case 'WORKLOAD_CREATED':            
-      return { 
+    case 'WORKLOAD_CREATED':
+      return {
         ...state,
         [action.payload.id]: {
           id: action.payload.id,
@@ -28,7 +27,7 @@ export const reducer = (state: State = initialState, action: Action): State => {
         },
       };
 
-      case 'WORKLOAD_CANCEL': 
+      case 'WORKLOAD_CANCEL':
         return {
           ...state,
           [action.payload.id]: {
@@ -36,8 +35,8 @@ export const reducer = (state: State = initialState, action: Action): State => {
             status: 'CANCELED',
           },
         }
-      
-      case 'WORKLOAD_UPDATE_STATUS': 
+
+      case 'WORKLOAD_UPDATE_STATUS':
         return {
           ...state,
           [action.payload.id]: {

@@ -1,19 +1,18 @@
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { map, tap, ignoreElements, filter, mergeMap } from 'rxjs/operators';
+import { map, tap, ignoreElements, filter, mergeMap, takeWhile } from 'rxjs/operators';
 
+// Types
 import { Action } from '../actions';
 import { State } from '../reducer';
-import { created, WORKLOAD_SUBMIT } from './actions';
+import {
+  WORKLOAD_SUBMIT,
+} from './types';
 import { WorkloadService } from './services';
-
 
 type AppEpic = Epic<Action, Action, State>;
 
-
-// import { WorkloadService } from './services';
-// const workloadService = new WorkloadService();
-// workloadService.create({ complexity: 1 })
-//   .then(console.log.bind(console, 'workloadService create'));
+// Actions
+import { created, updateStatus } from './actions';
 
 
 const logWorkloadSubmissions: AppEpic = (action$, state$) => (
@@ -33,21 +32,20 @@ export const createNewWorkload: AppEpic = (
   state$,
   { workloadService }: deps
 ) => (
-    action$.pipe(
-      filter(
-        (action: Action): action is WORKLOAD_SUBMIT => action.type === 'WORKLOAD_SUBMIT'
-      ),
-      map((action) => action.payload),
-      mergeMap(({ complexity }) =>
-        workloadService
-          .create({ complexity })
-          .then((workload) => {
-            return created(workload);
-          })
-      ),
-    )
-  );
-
+  action$.pipe(
+    filter(
+      (action: Action): action is WORKLOAD_SUBMIT => action.type === 'WORKLOAD_SUBMIT'
+    ),
+    map((action) => action.payload),
+    mergeMap(({ complexity }) =>
+      workloadService
+        .create({ complexity })
+        .then((workload) => {
+          return created(workload);
+        })
+    ),
+  )
+);
 
 export const epics = combineEpics(
   logWorkloadSubmissions,
