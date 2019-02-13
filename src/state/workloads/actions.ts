@@ -15,7 +15,9 @@ export const submit = ({ complexity }: { complexity: number }): WORKLOAD_SUBMIT 
   },
 });
 
-export const created = ({ id, complexity, completeDate }: { id: number, complexity: number, completeDate: Date }): WORKLOAD_CREATED => ({
+export const created = (
+  { id, complexity, completeDate }: { id: number, complexity: number, completeDate: Date }
+): WORKLOAD_CREATED => ({
   type: 'WORKLOAD_CREATED',
   payload: {
     id,
@@ -38,7 +40,9 @@ export const checkStatus = ({ id }: { id: number }): WORKLOAD_CHECK_STATUS => ({
   },
 });
 
-export const updateStatus = ({ id, status }: { id: number, status: Status }): WORKLOAD_UPDATE_STATUS => ({
+export const updateStatus = (
+  { id, status }: { id: number, status: Status }
+): WORKLOAD_UPDATE_STATUS => ({
   type: 'WORKLOAD_UPDATE_STATUS',
   payload: {
     id,

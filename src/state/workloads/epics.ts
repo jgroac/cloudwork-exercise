@@ -6,6 +6,7 @@ import { Action } from '../actions';
 import { State } from '../reducer';
 import {
   WORKLOAD_SUBMIT,
+  WORKLOAD_CANCEL
 } from './types';
 import { WorkloadService } from './services';
 
@@ -47,9 +48,32 @@ export const createNewWorkload: AppEpic = (
   )
 );
 
+export const cancelWorkload: AppEpic = (
+  action$,
+  state$,
+  { workloadService }: deps
+) => (
+  action$.pipe(
+    filter(
+      (action: Action): action is WORKLOAD_CANCEL => action.type === 'WORKLOAD_CANCEL'
+    ),
+    map(action => action.payload),
+    takeWhile((payload) => state$.value.workloads[payload.id].status === 'WORKING'),
+    mergeMap((payload) =>
+      workloadService
+        .cancel(payload)
+        .then(() => updateStatus({
+          id: payload.id,
+          status: 'CANCELED'
+        }))
+    ),
+  )
+);
+
 export const epics = combineEpics(
   logWorkloadSubmissions,
-  createNewWorkload
+  createNewWorkload,
+  cancelWorkload
 );
 
 export default epics;
