@@ -5,6 +5,9 @@ import {
     checkWorkload,
     updateWorkloadStatusAutomatically
 } from '../epics'
+import {
+    ActionsTypes
+} from '../types'
 import { of } from 'rxjs';
 import { ActionsObservable } from 'redux-observable';
 
@@ -12,7 +15,7 @@ describe('createNewWorkload', () => {
     it(' should call the api to create a new workload and dispatch the create action', async () => {
         const complexity = 6;
         const action$: any = of({
-            type: 'WORKLOAD_SUBMIT',
+            type: ActionsTypes.WORKLOAD_SUBMIT,
             payload: { complexity }
         });
         const state$: any = null;
@@ -30,7 +33,7 @@ describe('createNewWorkload', () => {
         const output$ = await createNewWorkload(action$, state$, dependencies).toPromise();
         expect(output$).toEqual(
             {
-                type: 'WORKLOAD_CREATED',
+                type: ActionsTypes.WORKLOAD_CREATED,
                 payload: workloadMock
             }
         );
@@ -43,7 +46,7 @@ describe('cancelWorkload', () => {
     for update workload status`, async () => {
             const id = 1;
             const action$: any = of({
-                type: 'WORKLOAD_CANCEL',
+                type: ActionsTypes.WORKLOAD_CANCEL,
                 payload: { id }
             });
             const state$: any = { value: { workloads: { 1: { status: 'WORKING' } } } };
@@ -57,7 +60,7 @@ describe('cancelWorkload', () => {
             const output$ = await cancelWorkload(action$, state$, dependencies).toPromise();
             expect(output$).toEqual(
                 {
-                    type: 'WORKLOAD_UPDATE_STATUS',
+                    type: ActionsTypes.WORKLOAD_UPDATE_STATUS,
                     payload: {
                         id,
                         status: 'CANCELED'
@@ -70,7 +73,7 @@ describe('cancelWorkload', () => {
     it(`shouldn't call the API if the workload status is 'SUCCESS'`, async () => {
         const id = 1;
         const action$: any = of({
-            type: 'WORKLOAD_CANCEL',
+            type: ActionsTypes.WORKLOAD_CANCEL,
             payload: { id }
         });
         const state$: any = { value: { workloads: { 1: { status: 'SUCCESS' } } } };
@@ -87,7 +90,7 @@ describe('cancelWorkload', () => {
     it(`shouldn't call the API if the workload status is 'FAILURE'`, async () => {
         const id = 1;
         const action$: any = of({
-            type: 'WORKLOAD_CANCEL',
+            type: ActionsTypes.WORKLOAD_CANCEL,
             payload: { id }
         });
         const state$: any = { value: { workloads: { 1: { status: 'FAILURE' } } } };
@@ -112,7 +115,7 @@ describe('checkWorkload', () => {
             status: 'WORKING'
         };
         const input$ = of({
-            type: 'WORKLOAD_CREATED',
+            type: ActionsTypes.WORKLOAD_CREATED,
             payload: workloadMock
         });
 
@@ -125,7 +128,7 @@ describe('checkWorkload', () => {
         const output$ = await checkWorkload(action$, state$, dependencies).toPromise();
         expect(output$).toEqual(
             {
-                type: 'WORKLOAD_CHECK_STATUS',
+                type: ActionsTypes.WORKLOAD_CHECK_STATUS,
                 payload: {
                     id: workloadMock.id,
                 }
@@ -141,7 +144,7 @@ describe('checkWorkload', () => {
             status: 'FAILURE'
         };
         const input$ = of({
-            type: 'WORKLOAD_CREATED',
+            type: ActionsTypes.WORKLOAD_CREATED,
             payload: workloadMock
         });
 
@@ -162,7 +165,7 @@ describe('updateWorkloadStatusAutomatically', () => {
     it(`should check the workload status and update if it's neither 'WORKING' OR 'CANCELED'`, async () => {
         const id = 2;
         const action$: any = of({
-            type: 'WORKLOAD_CHECK_STATUS',
+            type: ActionsTypes.WORKLOAD_CHECK_STATUS,
             payload: { id }
         });
         const state$: any = null;
@@ -181,7 +184,7 @@ describe('updateWorkloadStatusAutomatically', () => {
         const output$ = await updateWorkloadStatusAutomatically(action$, state$, dependencies).toPromise();
         expect(output$).toEqual(
             {
-                type: 'WORKLOAD_UPDATE_STATUS',
+                type: ActionsTypes.WORKLOAD_UPDATE_STATUS,
                 payload: {
                     id,
                     status: workloadMock.status
@@ -193,7 +196,7 @@ describe('updateWorkloadStatusAutomatically', () => {
     it(`should dispatch a WORKLOAD_CHECK_STATUS action if the workload status is still 'WORKING'`, async () => {
         const id = 2;
         const action$: any = of({
-            type: 'WORKLOAD_CHECK_STATUS',
+            type: ActionsTypes.WORKLOAD_CHECK_STATUS,
             payload: { id }
         });
         const state$: any = null;
@@ -212,7 +215,7 @@ describe('updateWorkloadStatusAutomatically', () => {
         const output$ = await updateWorkloadStatusAutomatically(action$, state$, dependencies).toPromise();
         expect(output$).toEqual(
             {
-                type: 'WORKLOAD_CHECK_STATUS',
+                type: ActionsTypes.WORKLOAD_CHECK_STATUS,
                 payload: {
                     id
                 }
